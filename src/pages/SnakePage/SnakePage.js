@@ -6,7 +6,7 @@ const SnakePage = () => {
     const initialState = [
         {
             x: 10,
-            y: 10,
+            y: 100,
             color: 'red',
             directions: [
                 {
@@ -21,7 +21,7 @@ const SnakePage = () => {
         },
         {
             x: 20,
-            y: 10,
+            y: 100,
             color: 'blue',
             directions: [
                 {
@@ -36,7 +36,7 @@ const SnakePage = () => {
         },
         {
             x: 30,
-            y: 10,
+            y: 100,
             color: 'white',
             directions: [
                 {
@@ -51,7 +51,7 @@ const SnakePage = () => {
         },
         {
             x: 40,
-            y: 10,
+            y: 100,
             color: 'orange',
             directions: [
                 {
@@ -68,7 +68,7 @@ const SnakePage = () => {
     ];
     const [snakeBody, setSnakeBody] = useState(initialState)
     const [startGame, setStratGame] = useState(true);
-    const [apple, setApple] = useState({ x: 130, y: 10 });
+    const [apple, setApple] = useState({ x: 130, y: 100 });
 
     const startNewGame = () => {
         setStratGame(true);
@@ -77,13 +77,15 @@ const SnakePage = () => {
 
     const gameOver = () => {
         setStratGame(false);
-        setSnakeBody(initialState);
     };
 
 
     useInterval(function () {
+        let isOver = false;
         for (let i = 0; i < snakeBody.length; i++) {
-
+            if (isOver) {
+                break;
+            }
             for (let j = 0; j < snakeBody[i].directions.length; j++) {
 
                 const currentPositionX = snakeBody[i].x;
@@ -98,30 +100,42 @@ const SnakePage = () => {
                                 setSnakeBody((prevState) => {
                                     if (prevState[prevState.length - 1].x >= 295) {
                                         gameOver();
-                                    }
-                                    let newPart = false;
-                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                        console.log('uhvatio')
-                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
-                                        newPart = true;
-                                    }
-                                    const tmpArr = [...prevState];
-                                    if (newPart) {
-                                        tmpArr.push({
-                                            x: tmpArr[tmpArr.length - 1].x + 10,
-                                            y: tmpArr[tmpArr.length - 1].y,
-                                            color: 'gray',
-                                            directions: [...tmpArr[tmpArr.length - 1].directions]
-                                        })
-                                    }
-                                    tmpArr[i].x = tmpArr[i].x + 10;
+                                        isOver = true;
 
-                                    if (tmpArr[i].x === element.lx) {
-                                        //tmpArr[i].directions[j].done = true;
-                                        tmpArr[i].directions.shift();
+                                    } else {
+                                        let newPart = false;
+                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                            console.log('uhvatio')
+                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                            newPart = true;
+                                        }
+                                        const tmpArr = [...prevState];
+
+                                        tmpArr[i].x = tmpArr[i].x + 10;
+
+                                        if (tmpArr[i].x === element.lx) {
+                                            //tmpArr[i].directions[j].done = true;
+                                            tmpArr[i].directions.shift();
+                                        }
+                                        if (newPart) {
+                                            const nd = [];
+                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
+                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
+                                                nd.push(ca)
+
+                                            }
+                                            tmpArr.push({
+                                                x: tmpArr[tmpArr.length - 1].x + 10,
+                                                y: tmpArr[tmpArr.length - 1].y,
+                                                color: 'gray',
+                                                directions: nd
+                                            })
+
+                                        }
+
+                                        return tmpArr;
                                     }
 
-                                    return tmpArr;
                                 })
                             }
 
@@ -132,29 +146,39 @@ const SnakePage = () => {
                                 setSnakeBody((prevState) => {
                                     if (prevState[prevState.length - 1].y >= 295) {
                                         gameOver();
-                                    }
-                                    let newPart = false;
-                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                        console.log('uhvatio')
-                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
-                                        newPart = true;
-                                    }
-                                    const tmpArr = [...prevState];
-                                    if (newPart) {
-                                        tmpArr.push({
-                                            x: tmpArr[tmpArr.length - 1].x,
-                                            y: tmpArr[tmpArr.length - 1].y + 10,
-                                            color: 'gray',
-                                            directions: [...tmpArr[tmpArr.length - 1].directions]
-                                        })
-                                    }
-                                    tmpArr[i].y = tmpArr[i].y + 10;
-                                    if (tmpArr[i].y === element.ly) {
-                                        //tmpArr[i].directions[j].done = true;
-                                        tmpArr[i].directions.shift();
+                                        isOver = true;
+                                    } else {
+                                        let newPart = false;
+                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                            console.log('uhvatio')
+                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                            newPart = true;
+                                        }
+                                        const tmpArr = [...prevState];
+
+                                        tmpArr[i].y = tmpArr[i].y + 10;
+                                        if (tmpArr[i].y === element.ly) {
+                                            //tmpArr[i].directions[j].done = true;
+                                            tmpArr[i].directions.shift();
+                                        }
+                                        if (newPart) {
+                                            const nd = [];
+                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
+                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
+                                                nd.push(ca)
+
+                                            }
+                                            tmpArr.push({
+                                                x: tmpArr[tmpArr.length - 1].x,
+                                                y: tmpArr[tmpArr.length - 1].y + 10,
+                                                color: 'gray',
+                                                directions: nd
+                                            })
+
+                                        }
+                                        return tmpArr;
                                     }
 
-                                    return tmpArr;
                                 })
                             }
                             break;
@@ -164,30 +188,41 @@ const SnakePage = () => {
                                 setSnakeBody((prevState) => {
                                     if (prevState[prevState.length - 1].x <= -5) {
                                         gameOver();
-                                    }
-                                    let newPart = false;
-                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                        console.log('uhvatio')
-                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
-                                        newPart = true;
-                                    }
-                                    const tmpArr = [...prevState];
-                                    if (newPart) {
-                                        tmpArr.push({
-                                            x: tmpArr[tmpArr.length - 1].x - 10,
-                                            y: tmpArr[tmpArr.length - 1].y,
-                                            color: 'gray',
-                                            directions: [...tmpArr[tmpArr.length - 1].directions]
-                                        })
+                                        isOver = true;
+                                    } else {
+                                        let newPart = false;
+                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                            console.log('uhvatio')
+                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                            newPart = true;
+                                        }
+                                        const tmpArr = [...prevState];
+
+
+                                        tmpArr[i].x = tmpArr[i].x - 10;
+                                        if (tmpArr[i].x === element.lx) {
+                                            //tmpArr[i].directions[j].done = true;
+                                            tmpArr[i].directions.shift();
+                                        }
+                                        if (newPart) {
+                                            const nd = [];
+                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
+                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
+                                                nd.push(ca)
+
+                                            }
+                                            tmpArr.push({
+                                                x: tmpArr[tmpArr.length - 1].x - 10,
+                                                y: tmpArr[tmpArr.length - 1].y,
+                                                color: 'gray',
+                                                directions: nd
+                                            })
+
+                                        }
+
+                                        return tmpArr;
                                     }
 
-                                    tmpArr[i].x = tmpArr[i].x - 10;
-                                    if (tmpArr[i].x === element.lx) {
-                                        //tmpArr[i].directions[j].done = true;
-                                        tmpArr[i].directions.shift();
-                                    }
-
-                                    return tmpArr;
                                 })
                             }
 
@@ -197,29 +232,41 @@ const SnakePage = () => {
                             if (currentPositionY > element.ly) {
                                 setSnakeBody((prevState) => {
                                     if (prevState[prevState.length - 1].y <= -5) {
+
                                         gameOver();
+                                        isOver = true;
+                                    } else {
+                                        let newPart = false;
+                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                            console.log('uhvatio')
+                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                            newPart = true;
+                                        }
+                                        const tmpArr = [...prevState];
+
+                                        tmpArr[i].y = tmpArr[i].y - 10;
+                                        if (tmpArr[i].y === element.ly) {
+                                            //tmpArr[i].directions[j].done = true;
+                                            tmpArr[i].directions.shift();
+                                        }
+                                        if (newPart) {
+                                            const nd = [];
+                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
+                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
+                                                nd.push(ca)
+
+                                            }
+                                            tmpArr.push({
+                                                x: tmpArr[tmpArr.length - 1].x,
+                                                y: tmpArr[tmpArr.length - 1].y - 10,
+                                                color: 'gray',
+                                                directions: nd
+                                            })
+
+                                        }
+                                        return tmpArr;
                                     }
-                                    let newPart = false;
-                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                        console.log('uhvatio')
-                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
-                                        newPart = true;
-                                    }
-                                    const tmpArr = [...prevState];
-                                    if (newPart) {
-                                        tmpArr.push({
-                                            x: tmpArr[tmpArr.length - 1].x,
-                                            y: tmpArr[tmpArr.length - 1].y - 10,
-                                            color: 'gray',
-                                            directions: [...tmpArr[tmpArr.length - 1].directions]
-                                        })
-                                    }
-                                    tmpArr[i].y = tmpArr[i].y - 10;
-                                    if (tmpArr[i].y === element.ly) {
-                                        //tmpArr[i].directions[j].done = true;
-                                        tmpArr[i].directions.shift();
-                                    }
-                                    return tmpArr;
+
                                 })
                             }
                             break;
@@ -231,20 +278,19 @@ const SnakePage = () => {
             }
         }
 
-    }, 100);
+    }, startGame ? 100 : null);
 
 
     const moveSnake = (e) => {
-        console.log(snakeBody[2].directions);
         if (startGame) {
             setSnakeBody(prevState => {
                 const tmpArr = [...prevState];
-                debugger;
                 for (let i = 0; i < tmpArr.length; i++) {
                     tmpArr[i].directions[tmpArr[i].directions.length - 1].lx = tmpArr[tmpArr.length - 1].x;
                     tmpArr[i].directions[tmpArr[i].directions.length - 1].ly = tmpArr[tmpArr.length - 1].y;
                     if (i === tmpArr.length - 1) {
                         tmpArr[i].directions[tmpArr[i].directions.length - 1].done = true;
+                        tmpArr[i].directions.shift();
                     }
                     tmpArr[i].directions.push({
                         d: e.key,
