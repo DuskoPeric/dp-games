@@ -8,11 +8,20 @@
       background-color: #b0ba00;
       border: solid 4px #6b5407;
       position: relative;
+      overflow: hidden;
       &__snake {
         position: absolute;
         width: 10px;
         height: 10px;
         background-color: #6b5407;
+      }
+      &__apple {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border:solid 2px #6b5407;
+        box-sizing: border-box;
+
       }
     }
     &__gameover {

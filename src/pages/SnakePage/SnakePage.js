@@ -1,101 +1,295 @@
 import "./SnakePage.scss";
 import React, { useEffect, useState } from "react";
+import useInterval from "../../hooks/useInterval";
 
 const SnakePage = () => {
-  const [snakeX, setSnakeX] = useState(10);
-  const [snakeY, setSnakeY] = useState(10);
-  const [startGame, setStratGame] = useState(true);
-  let interval;
-
-  const startNewGame = () => {
-    setSnakeX(10);
-    setSnakeY(10);
-    setStratGame(true);
-  };
-
-  const gameOver = () => {
-    if (interval) {
-      clearInterval(interval);
-    }
-    setStratGame(false);
-  };
-
-  function startMoving(direction, value) {
-    if (interval) {
-      clearInterval(interval);
-    }
-    interval = setInterval(function () {
-      if (direction === "x") {
-        if (value) {
-          setSnakeX((prevState) => {
-            if (prevState >= 290) {
-              gameOver();
-            }
-            return prevState + 10;
-          });
-        } else {
-          setSnakeX((prevState) => {
-            if (prevState < 0) {
-              gameOver();
-            }
-            return prevState - 10;
-          });
+    const initialState = [
+        {
+            x: 10,
+            y: 10,
+            color: 'red',
+            directions: [
+                {
+                    d: 'ArrowRight',
+                    sx: 10,
+                    sy: 10,
+                    lx: 999,
+                    ly: 10,
+                    done: false
+                }
+            ]
+        },
+        {
+            x: 20,
+            y: 10,
+            color: 'blue',
+            directions: [
+                {
+                    d: 'ArrowRight',
+                    sx: 20,
+                    sy: 10,
+                    lx: 999,
+                    ly: 10,
+                    done: false
+                }
+            ]
+        },
+        {
+            x: 30,
+            y: 10,
+            color: 'white',
+            directions: [
+                {
+                    d: 'ArrowRight',
+                    sx: 20,
+                    sy: 10,
+                    lx: 999,
+                    ly: 10,
+                    done: false
+                }
+            ]
+        },
+        {
+            x: 40,
+            y: 10,
+            color: 'orange',
+            directions: [
+                {
+                    d: 'ArrowRight',
+                    sx: 20,
+                    sy: 10,
+                    lx: 999,
+                    ly: 10,
+                    done: false
+                }
+            ]
         }
-      } else {
-        if (value) {
-          setSnakeY((prevState) => prevState - 10);
-        } else {
-          setSnakeY((prevState) => prevState + 10);
-        }
-      }
-    }, 50);
-  }
-  const moveSnake = (e) => {
-    console.log(e.key);
-    switch (e.key) {
-      case "ArrowRight":
-        startMoving("x", true);
-        break;
-      case "ArrowLeft":
-        startMoving("x", false);
-        break;
-      case "ArrowUp":
-        startMoving("y", true);
-        break;
-      case "ArrowDown":
-        startMoving("y", false);
-        break;
-      default:
-        break;
-    }
-  };
 
-  useEffect(() => {
-    document.addEventListener("keyup", moveSnake);
-    return () => {
-      document.removeEventListener("keyup", moveSnake);
+    ];
+    const [snakeBody, setSnakeBody] = useState(initialState)
+    const [startGame, setStratGame] = useState(true);
+    const [apple, setApple] = useState({ x: 130, y: 10 });
+
+    const startNewGame = () => {
+        setStratGame(true);
+        setSnakeBody(initialState);
     };
-  }, [startGame]);
 
-  return (
-    <div className="snake-game">
-      <h2>Snake Game</h2>
-      <div className="snake-game__content">
-        {startGame ? (
-          <div className="snake-game__content__board">
-            <div
-              style={{ left: snakeX + "px", top: snakeY + "px" }}
-              className="snake-game__content__board__snake"
-            ></div>
-          </div>
-        ) : (
-          <div className="snake-game__content__gameover">
-            <button onClick={startNewGame}>Play again</button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    const gameOver = () => {
+        setStratGame(false);
+        setSnakeBody(initialState);
+    };
+
+
+    useInterval(function () {
+        for (let i = 0; i < snakeBody.length; i++) {
+
+            for (let j = 0; j < snakeBody[i].directions.length; j++) {
+
+                const currentPositionX = snakeBody[i].x;
+                const currentPositionY = snakeBody[i].y;
+                const element = snakeBody[i].directions[j];
+                if (!element.done) {
+
+                    switch (element.d) {
+                        case "ArrowRight":
+
+                            if (currentPositionX < element.lx) {
+                                setSnakeBody((prevState) => {
+                                    if (prevState[prevState.length - 1].x >= 295) {
+                                        gameOver();
+                                    }
+                                    let newPart = false;
+                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                        console.log('uhvatio')
+                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                        newPart = true;
+                                    }
+                                    const tmpArr = [...prevState];
+                                    if (newPart) {
+                                        tmpArr.push({
+                                            x: tmpArr[tmpArr.length - 1].x + 10,
+                                            y: tmpArr[tmpArr.length - 1].y,
+                                            color: 'gray',
+                                            directions: [...tmpArr[tmpArr.length - 1].directions]
+                                        })
+                                    }
+                                    tmpArr[i].x = tmpArr[i].x + 10;
+
+                                    if (tmpArr[i].x === element.lx) {
+                                        //tmpArr[i].directions[j].done = true;
+                                        tmpArr[i].directions.shift();
+                                    }
+
+                                    return tmpArr;
+                                })
+                            }
+
+                            break;
+                        case "ArrowDown":
+
+                            if (currentPositionY < element.ly) {
+                                setSnakeBody((prevState) => {
+                                    if (prevState[prevState.length - 1].y >= 295) {
+                                        gameOver();
+                                    }
+                                    let newPart = false;
+                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                        console.log('uhvatio')
+                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                        newPart = true;
+                                    }
+                                    const tmpArr = [...prevState];
+                                    if (newPart) {
+                                        tmpArr.push({
+                                            x: tmpArr[tmpArr.length - 1].x,
+                                            y: tmpArr[tmpArr.length - 1].y + 10,
+                                            color: 'gray',
+                                            directions: [...tmpArr[tmpArr.length - 1].directions]
+                                        })
+                                    }
+                                    tmpArr[i].y = tmpArr[i].y + 10;
+                                    if (tmpArr[i].y === element.ly) {
+                                        //tmpArr[i].directions[j].done = true;
+                                        tmpArr[i].directions.shift();
+                                    }
+
+                                    return tmpArr;
+                                })
+                            }
+                            break;
+                        case "ArrowLeft":
+
+                            if (currentPositionX > element.lx) {
+                                setSnakeBody((prevState) => {
+                                    if (prevState[prevState.length - 1].x <= -5) {
+                                        gameOver();
+                                    }
+                                    let newPart = false;
+                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                        console.log('uhvatio')
+                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                        newPart = true;
+                                    }
+                                    const tmpArr = [...prevState];
+                                    if (newPart) {
+                                        tmpArr.push({
+                                            x: tmpArr[tmpArr.length - 1].x - 10,
+                                            y: tmpArr[tmpArr.length - 1].y,
+                                            color: 'gray',
+                                            directions: [...tmpArr[tmpArr.length - 1].directions]
+                                        })
+                                    }
+
+                                    tmpArr[i].x = tmpArr[i].x - 10;
+                                    if (tmpArr[i].x === element.lx) {
+                                        //tmpArr[i].directions[j].done = true;
+                                        tmpArr[i].directions.shift();
+                                    }
+
+                                    return tmpArr;
+                                })
+                            }
+
+                            break;
+                        case "ArrowUp":
+
+                            if (currentPositionY > element.ly) {
+                                setSnakeBody((prevState) => {
+                                    if (prevState[prevState.length - 1].y <= -5) {
+                                        gameOver();
+                                    }
+                                    let newPart = false;
+                                    if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+                                        console.log('uhvatio')
+                                        setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                        newPart = true;
+                                    }
+                                    const tmpArr = [...prevState];
+                                    if (newPart) {
+                                        tmpArr.push({
+                                            x: tmpArr[tmpArr.length - 1].x,
+                                            y: tmpArr[tmpArr.length - 1].y - 10,
+                                            color: 'gray',
+                                            directions: [...tmpArr[tmpArr.length - 1].directions]
+                                        })
+                                    }
+                                    tmpArr[i].y = tmpArr[i].y - 10;
+                                    if (tmpArr[i].y === element.ly) {
+                                        //tmpArr[i].directions[j].done = true;
+                                        tmpArr[i].directions.shift();
+                                    }
+                                    return tmpArr;
+                                })
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                }
+            }
+        }
+
+    }, 100);
+
+
+    const moveSnake = (e) => {
+        console.log(snakeBody[2].directions);
+        if (startGame) {
+            setSnakeBody(prevState => {
+                const tmpArr = [...prevState];
+                debugger;
+                for (let i = 0; i < tmpArr.length; i++) {
+                    tmpArr[i].directions[tmpArr[i].directions.length - 1].lx = tmpArr[tmpArr.length - 1].x;
+                    tmpArr[i].directions[tmpArr[i].directions.length - 1].ly = tmpArr[tmpArr.length - 1].y;
+                    if (i === tmpArr.length - 1) {
+                        tmpArr[i].directions[tmpArr[i].directions.length - 1].done = true;
+                    }
+                    tmpArr[i].directions.push({
+                        d: e.key,
+                        sx: tmpArr[tmpArr.length - 1].x,
+                        sy: tmpArr[tmpArr.length - 1].y,
+                        lx: e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -999 : 999,
+                        ly: e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -999 : 999,
+                        done: false
+                    })
+                }
+                return tmpArr;
+            })
+
+        }
+
+    };
+
+    useEffect(() => {
+        document.addEventListener("keyup", moveSnake);
+        return () => {
+            document.removeEventListener("keyup", moveSnake);
+        };
+    });
+
+    return (
+        <div className="snake-game">
+            <h2>Snake Game</h2>
+            <div className="snake-game__content">
+                {startGame ? (
+                    <div className="snake-game__content__board">
+                        {snakeBody.map((part, index) => <div
+                            key={index} style={{ left: part.x + "px", top: part.y + "px", background: part.color }}
+                            className="snake-game__content__board__snake"
+                        ></div>)}
+
+                        <div className="snake-game__content__board__apple" style={{ left: apple.x + "px", top: apple.y + "px" }}></div>
+                    </div>
+                ) : (
+                        <div className="snake-game__content__gameover">
+                            <button onClick={startNewGame}>Play again</button>
+                        </div>
+                    )}
+            </div>
+        </div>
+    );
 };
 
 export default SnakePage;
