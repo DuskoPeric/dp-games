@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import useInterval from "../../hooks/useInterval";
 import { getSnakeData, getAppleData } from "./data";
 import { generatePosition } from "./utils";
-import kbImg from '../../assets/images/kb.svg'
 
 
 const SnakePage = () => {
@@ -252,7 +251,7 @@ const SnakePage = () => {
                 </div>
 
             </div>
-            <img className='snake-game__instructions' src={kbImg} alt="arrows" />
+            <img className='snake-game__instructions' src={process.env.PUBLIC_URL + '/assets/images/kb.svg'} alt="arrows" />
             <div className="snake-game__controls">
                 <div className="snake-game__controls__btnholder">
                     <button onClick={() => { moveSnake('ArrowUp') }}>&#8593;</button>
