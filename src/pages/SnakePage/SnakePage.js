@@ -1,84 +1,45 @@
 import "./SnakePage.scss";
 import React, { useEffect, useState } from "react";
 import useInterval from "../../hooks/useInterval";
+import { getSnakeData, getAppleData } from "./data";
+import { generatePosition } from "./utils";
+
 
 const SnakePage = () => {
-    const initialState = [
-        {
-            x: 10,
-            y: 100,
-            color: 'red',
-            directions: [
-                {
-                    d: 'ArrowRight',
-                    sx: 10,
-                    sy: 10,
-                    lx: 999,
-                    ly: 10,
-                    done: false
-                }
-            ]
-        },
-        {
-            x: 20,
-            y: 100,
-            color: 'blue',
-            directions: [
-                {
-                    d: 'ArrowRight',
-                    sx: 20,
-                    sy: 10,
-                    lx: 999,
-                    ly: 10,
-                    done: false
-                }
-            ]
-        },
-        {
-            x: 30,
-            y: 100,
-            color: 'white',
-            directions: [
-                {
-                    d: 'ArrowRight',
-                    sx: 20,
-                    sy: 10,
-                    lx: 999,
-                    ly: 10,
-                    done: false
-                }
-            ]
-        },
-        {
-            x: 40,
-            y: 100,
-            color: 'orange',
-            directions: [
-                {
-                    d: 'ArrowRight',
-                    sx: 20,
-                    sy: 10,
-                    lx: 999,
-                    ly: 10,
-                    done: false
-                }
-            ]
-        }
-
-    ];
-    const [snakeBody, setSnakeBody] = useState(initialState)
-    const [startGame, setStratGame] = useState(true);
+    const initialSnakeState = getSnakeData();
+    const initialAppleState = getAppleData();
+    const [snakeBody, setSnakeBody] = useState(initialSnakeState)
+    const [startGame, setStratGame] = useState(false);
     const [apple, setApple] = useState({ x: 130, y: 100 });
+    const [firstPlay, setFirstPlay] = useState(true);
 
     const startNewGame = () => {
+        if (firstPlay) {
+            setFirstPlay(false);
+        }
         setStratGame(true);
-        setSnakeBody(initialState);
+        setSnakeBody(initialSnakeState);
+        setApple(initialAppleState);
     };
 
     const gameOver = () => {
         setStratGame(false);
     };
 
+    const addNewPart = (tmpArr, incrementX, incrementY) => {
+        const nd = [];
+        for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
+            const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
+            nd.push(ca)
+
+        }
+        tmpArr.push({
+            x: tmpArr[tmpArr.length - 1].x + incrementX,
+            y: tmpArr[tmpArr.length - 1].y + incrementY,
+
+            directions: nd
+        })
+    }
 
     useInterval(function () {
         let isOver = false;
@@ -106,7 +67,8 @@ const SnakePage = () => {
                                         let newPart = false;
                                         if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
                                             console.log('uhvatio')
-                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+
+                                            setApple(generatePosition(prevState));
                                             newPart = true;
                                         }
                                         const tmpArr = [...prevState];
@@ -118,18 +80,7 @@ const SnakePage = () => {
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
-                                            const nd = [];
-                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
-                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
-                                                nd.push(ca)
-
-                                            }
-                                            tmpArr.push({
-                                                x: tmpArr[tmpArr.length - 1].x + 10,
-                                                y: tmpArr[tmpArr.length - 1].y,
-                                                color: 'gray',
-                                                directions: nd
-                                            })
+                                            addNewPart(tmpArr, +10, null)
 
                                         }
 
@@ -151,7 +102,7 @@ const SnakePage = () => {
                                         let newPart = false;
                                         if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
                                             console.log('uhvatio')
-                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                            setApple(generatePosition(prevState));
                                             newPart = true;
                                         }
                                         const tmpArr = [...prevState];
@@ -162,18 +113,7 @@ const SnakePage = () => {
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
-                                            const nd = [];
-                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
-                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
-                                                nd.push(ca)
-
-                                            }
-                                            tmpArr.push({
-                                                x: tmpArr[tmpArr.length - 1].x,
-                                                y: tmpArr[tmpArr.length - 1].y + 10,
-                                                color: 'gray',
-                                                directions: nd
-                                            })
+                                            addNewPart(tmpArr, null, +10)
 
                                         }
                                         return tmpArr;
@@ -193,7 +133,8 @@ const SnakePage = () => {
                                         let newPart = false;
                                         if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
                                             console.log('uhvatio')
-                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+
+                                            setApple(generatePosition(prevState));
                                             newPart = true;
                                         }
                                         const tmpArr = [...prevState];
@@ -205,19 +146,7 @@ const SnakePage = () => {
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
-                                            const nd = [];
-                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
-                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
-                                                nd.push(ca)
-
-                                            }
-                                            tmpArr.push({
-                                                x: tmpArr[tmpArr.length - 1].x - 10,
-                                                y: tmpArr[tmpArr.length - 1].y,
-                                                color: 'gray',
-                                                directions: nd
-                                            })
-
+                                            addNewPart(tmpArr, -10, null)
                                         }
 
                                         return tmpArr;
@@ -239,7 +168,7 @@ const SnakePage = () => {
                                         let newPart = false;
                                         if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
                                             console.log('uhvatio')
-                                            setApple({ x: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10, y: (Math.floor(Math.random() * (30 - 0 + 1)) + 0) * 10 });
+                                            setApple(generatePosition(prevState));
                                             newPart = true;
                                         }
                                         const tmpArr = [...prevState];
@@ -250,18 +179,7 @@ const SnakePage = () => {
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
-                                            const nd = [];
-                                            for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
-                                                const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
-                                                nd.push(ca)
-
-                                            }
-                                            tmpArr.push({
-                                                x: tmpArr[tmpArr.length - 1].x,
-                                                y: tmpArr[tmpArr.length - 1].y - 10,
-                                                color: 'gray',
-                                                directions: nd
-                                            })
+                                            addNewPart(tmpArr, null, -10)
 
                                         }
                                         return tmpArr;
@@ -276,15 +194,31 @@ const SnakePage = () => {
                     break;
                 }
             }
+            if (i === snakeBody.length - 1) {
+                for (let l = 0; l < snakeBody.length - 1; l++) {
+                    if (snakeBody[snakeBody.length - 1].x === snakeBody[l].x && snakeBody[snakeBody.length - 1].y === snakeBody[l].y) {
+                        gameOver();
+                        isOver = true;
+                    }
+
+                }
+            }
         }
 
-    }, startGame ? 100 : null);
+    }, startGame ? 50 : null);
 
 
     const moveSnake = (e) => {
         if (startGame) {
             setSnakeBody(prevState => {
                 const tmpArr = [...prevState];
+                const lastDirection = tmpArr[tmpArr.length - 1].directions[tmpArr[tmpArr.length - 1].directions.length - 1].d;
+                if ((lastDirection === 'ArrowRight' && e.key === 'ArrowLeft')
+                    || (lastDirection === 'ArrowLeft' && e.key === 'ArrowRight')
+                    || (lastDirection === 'ArrowUp' && e.key === 'ArrowDown')
+                    || (lastDirection === 'ArrowDown' && e.key === 'ArrowUp')) {
+                    return tmpArr;
+                }
                 for (let i = 0; i < tmpArr.length; i++) {
                     tmpArr[i].directions[tmpArr[i].directions.length - 1].lx = tmpArr[tmpArr.length - 1].x;
                     tmpArr[i].directions[tmpArr[i].directions.length - 1].ly = tmpArr[tmpArr.length - 1].y;
@@ -303,9 +237,7 @@ const SnakePage = () => {
                 }
                 return tmpArr;
             })
-
         }
-
     };
 
     useEffect(() => {
@@ -317,22 +249,25 @@ const SnakePage = () => {
 
     return (
         <div className="snake-game">
-            <h2>Snake Game</h2>
+            <h2>Retro Snake</h2>
             <div className="snake-game__content">
-                {startGame ? (
-                    <div className="snake-game__content__board">
-                        {snakeBody.map((part, index) => <div
-                            key={index} style={{ left: part.x + "px", top: part.y + "px", background: part.color }}
-                            className="snake-game__content__board__snake"
-                        ></div>)}
+                <div className="snake-game__content__holder">
+                    {startGame ? (
 
-                        <div className="snake-game__content__board__apple" style={{ left: apple.x + "px", top: apple.y + "px" }}></div>
-                    </div>
-                ) : (
-                        <div className="snake-game__content__gameover">
-                            <button onClick={startNewGame}>Play again</button>
+                        <div className="snake-game__content__holder__board">
+                            {snakeBody.map((part, index) => <div
+                                key={index} style={{ left: part.x + "px", top: part.y + "px" }}
+                                className="snake-game__content__holder__board__snake"
+                            ></div>)}
+
+                            <div className="snake-game__content__holder__board__apple" style={{ left: apple.x + "px", top: apple.y + "px" }}></div>
                         </div>
-                    )}
+                    ) : (
+                            <div className="snake-game__content__holder__gameover">
+                                <button onClick={startNewGame}>{firstPlay ? 'Start' : 'Play again'}</button>
+                            </div>
+                        )}
+                </div>
             </div>
         </div>
     );
