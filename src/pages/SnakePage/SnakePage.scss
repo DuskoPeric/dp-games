@@ -2,7 +2,8 @@
 .snake-game {
   font-family: 'Press Start 2P', cursive;
   h2{
-    color: #afac0d
+    color: #afac0d;
+    margin-bottom: 50px;
   }
   &__content {
     display: flex;

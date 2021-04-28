@@ -1,5 +1,4 @@
 export const generatePosition = (arr) => {
-    console.log('from ut')
     let isValid = false;
     let count = 0
     let x;

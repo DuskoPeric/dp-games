@@ -26,17 +26,24 @@ const SnakePage = () => {
         setStratGame(false);
     };
 
+    const isNewPart = (i, prevState) => {
+        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
+            setApple(generatePosition(prevState));
+            return true;
+        } else {
+            return false
+        }
+    }
+
     const addNewPart = (tmpArr, incrementX, incrementY) => {
         const nd = [];
         for (let k = 0; k < tmpArr[tmpArr.length - 1].directions.length; k++) {
             const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
             nd.push(ca)
-
         }
         tmpArr.push({
             x: tmpArr[tmpArr.length - 1].x + incrementX,
             y: tmpArr[tmpArr.length - 1].y + incrementY,
-
             directions: nd
         })
     }
@@ -62,34 +69,21 @@ const SnakePage = () => {
                                     if (prevState[prevState.length - 1].x >= 295) {
                                         gameOver();
                                         isOver = true;
-
                                     } else {
-                                        let newPart = false;
-                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                            console.log('uhvatio')
-
-                                            setApple(generatePosition(prevState));
-                                            newPart = true;
-                                        }
+                                        let newPart = isNewPart(i, prevState);
                                         const tmpArr = [...prevState];
-
                                         tmpArr[i].x = tmpArr[i].x + 10;
-
                                         if (tmpArr[i].x === element.lx) {
-                                            //tmpArr[i].directions[j].done = true;
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
                                             addNewPart(tmpArr, +10, null)
-
                                         }
 
                                         return tmpArr;
                                     }
-
                                 })
                             }
-
                             break;
                         case "ArrowDown":
 
@@ -99,26 +93,17 @@ const SnakePage = () => {
                                         gameOver();
                                         isOver = true;
                                     } else {
-                                        let newPart = false;
-                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                            console.log('uhvatio')
-                                            setApple(generatePosition(prevState));
-                                            newPart = true;
-                                        }
+                                        let newPart = isNewPart(i, prevState);
                                         const tmpArr = [...prevState];
-
                                         tmpArr[i].y = tmpArr[i].y + 10;
                                         if (tmpArr[i].y === element.ly) {
-                                            //tmpArr[i].directions[j].done = true;
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
                                             addNewPart(tmpArr, null, +10)
-
                                         }
                                         return tmpArr;
                                     }
-
                                 })
                             }
                             break;
@@ -130,19 +115,10 @@ const SnakePage = () => {
                                         gameOver();
                                         isOver = true;
                                     } else {
-                                        let newPart = false;
-                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                            console.log('uhvatio')
-
-                                            setApple(generatePosition(prevState));
-                                            newPart = true;
-                                        }
+                                        let newPart = isNewPart(i, prevState);
                                         const tmpArr = [...prevState];
-
-
                                         tmpArr[i].x = tmpArr[i].x - 10;
                                         if (tmpArr[i].x === element.lx) {
-                                            //tmpArr[i].directions[j].done = true;
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
@@ -151,31 +127,21 @@ const SnakePage = () => {
 
                                         return tmpArr;
                                     }
-
                                 })
                             }
-
                             break;
                         case "ArrowUp":
 
                             if (currentPositionY > element.ly) {
                                 setSnakeBody((prevState) => {
                                     if (prevState[prevState.length - 1].y <= -5) {
-
                                         gameOver();
                                         isOver = true;
                                     } else {
-                                        let newPart = false;
-                                        if (i === snakeBody.length - 1 && prevState[prevState.length - 1].x === apple.x && prevState[prevState.length - 1].y === apple.y) {
-                                            console.log('uhvatio')
-                                            setApple(generatePosition(prevState));
-                                            newPart = true;
-                                        }
+                                        let newPart = isNewPart(i, prevState);
                                         const tmpArr = [...prevState];
-
                                         tmpArr[i].y = tmpArr[i].y - 10;
                                         if (tmpArr[i].y === element.ly) {
-                                            //tmpArr[i].directions[j].done = true;
                                             tmpArr[i].directions.shift();
                                         }
                                         if (newPart) {
@@ -184,7 +150,6 @@ const SnakePage = () => {
                                         }
                                         return tmpArr;
                                     }
-
                                 })
                             }
                             break;
