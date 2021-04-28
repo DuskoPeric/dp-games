@@ -19,7 +19,7 @@
     }
   }
   &__controls{
-        width: 300px;
+    width: 300px;
     margin: auto;
     margin-top: 30px;
     display: none;
@@ -31,14 +31,14 @@
     }
     &__btnholder{
       button{
-        width: 45px;
-        height: 45px;
+        width: 55px;
+        height: 55px;
         border: none;
         border-radius: 12px;
         background: #afac0d;
         font-size: 24px;
         &.margin-r{
-          margin-right: 50px;
+          margin-right: 90px;
         }
         &:focus{
           outline: none;
@@ -97,13 +97,36 @@
       }
     }
     &__gameover {
-    display: flex;
+    
     width: 320px;
     height: 320px;
     background-color: #191801;
     border: solid 4px #d6af2e;
-    justify-content: center;
-    align-items: center;
+    &__speed{
+      width: 150px;
+      margin: auto;
+      margin-bottom: 50px;
+      margin-top: 50px;
+      p{
+        display: flex;
+        color: #afac0d;
+        &.active{
+          span{
+            background: #afac0d;
+          }
+        }
+        span{
+          cursor: pointer;
+          margin-top: -4px;
+          margin-right: 20px;
+          display: block;
+          width:20px;
+          height: 20px;
+          border: solid 1px #afac0d;
+
+        }
+      }
+    }
     button{
       background: #afac0d;
       border: none;

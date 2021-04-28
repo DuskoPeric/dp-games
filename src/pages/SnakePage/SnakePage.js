@@ -13,6 +13,7 @@ const SnakePage = () => {
     const [apple, setApple] = useState({ x: 130, y: 100 });
     const [firstPlay, setFirstPlay] = useState(true);
     const [score, setScore] = useState(0);
+    const [speed, setSpeed] = useState(50);
 
     const startNewGame = () => {
         if (firstPlay) {
@@ -173,7 +174,7 @@ const SnakePage = () => {
             }
         }
 
-    }, startGame ? 50 : null);
+    }, startGame ? speed : null);
 
 
     const moveSnake = (key) => {
@@ -244,6 +245,10 @@ const SnakePage = () => {
 
                     ) : (
                             <div className="snake-game__content__holder__gameover">
+                                <div className="snake-game__content__holder__gameover__speed">
+                                    <p className={speed === 100 ? 'active' : null} onClick={() => { setSpeed(100) }}><span></span>Easy</p>
+                                    <p className={speed === 50 ? 'active' : null} onClick={() => { setSpeed(50) }}><span></span>Medium</p>
+                                </div>
                                 <button onClick={startNewGame}>{firstPlay ? 'Start' : 'Play again'}</button>
                             </div>
                         )}
