@@ -1,6 +1,6 @@
 import "./App.scss";
 import Header from "./components/shared/header/Header";
-import HomePage from "./pages/Home/HomePage";
+import HomePage from "./pages/HomePage/HomePage";
 import { Route } from "react-router-dom";
 import SnakePage from "./pages/SnakePage/SnakePage";
 

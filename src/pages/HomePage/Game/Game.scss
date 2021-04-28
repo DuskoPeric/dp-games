@@ -1,0 +1,47 @@
+@import "../../../style/variables.scss";
+$speed:0.2s;
+.game-holder{
+    border-radius: 50px;
+    border: solid 10px #69af46;
+    width: 300px;
+    height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.0);
+    overflow: hidden;
+    margin-bottom: 20px;
+    @include transition(all, $speed);
+    @media #{$mobile}{
+        border: solid 5px #69af46;
+        width: 200px;
+        height: 200px;
+    }
+    &:hover{
+            @include transition(all, $speed);
+        background: rgba(0, 0, 0,0.9);
+        button{
+            @include transition(all, $speed);
+            opacity: 1;
+            cursor: pointer;
+        }
+    }
+    img{
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
+    button{
+            @include transition(all, $speed);
+        opacity: 0;
+        font-family: 'Amatic SC', cursive;
+        color: #69af46;
+        border: none;
+        background: transparent;
+        font-size: 68px;
+        text-transform: uppercase;
+    }
+}

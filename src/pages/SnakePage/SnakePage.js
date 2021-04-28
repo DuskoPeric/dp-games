@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useInterval from "../../hooks/useInterval";
 import { getSnakeData, getAppleData } from "./data";
 import { generatePosition } from "./utils";
+import kbImg from '../../assets/images/kb.svg'
 
 
 const SnakePage = () => {
@@ -12,11 +13,13 @@ const SnakePage = () => {
     const [startGame, setStratGame] = useState(false);
     const [apple, setApple] = useState({ x: 130, y: 100 });
     const [firstPlay, setFirstPlay] = useState(true);
+    const [score, setScore] = useState(0);
 
     const startNewGame = () => {
         if (firstPlay) {
             setFirstPlay(false);
         }
+        setScore(0)
         setStratGame(true);
         setSnakeBody(initialSnakeState);
         setApple(initialAppleState);
@@ -41,6 +44,7 @@ const SnakePage = () => {
             const ca = { ...tmpArr[tmpArr.length - 1].directions[k] }
             nd.push(ca)
         }
+        setScore(prevState => prevState + 1)
         tmpArr.push({
             x: tmpArr[tmpArr.length - 1].x + incrementX,
             y: tmpArr[tmpArr.length - 1].y + incrementY,
@@ -173,15 +177,19 @@ const SnakePage = () => {
     }, startGame ? 50 : null);
 
 
-    const moveSnake = (e) => {
+    const moveSnake = (key) => {
         if (startGame) {
+
             setSnakeBody(prevState => {
+                if (prevState === undefined) {
+                    return prevState;
+                }
                 const tmpArr = [...prevState];
                 const lastDirection = tmpArr[tmpArr.length - 1].directions[tmpArr[tmpArr.length - 1].directions.length - 1].d;
-                if ((lastDirection === 'ArrowRight' && e.key === 'ArrowLeft')
-                    || (lastDirection === 'ArrowLeft' && e.key === 'ArrowRight')
-                    || (lastDirection === 'ArrowUp' && e.key === 'ArrowDown')
-                    || (lastDirection === 'ArrowDown' && e.key === 'ArrowUp')) {
+                if ((lastDirection === 'ArrowRight' && key === 'ArrowLeft')
+                    || (lastDirection === 'ArrowLeft' && key === 'ArrowRight')
+                    || (lastDirection === 'ArrowUp' && key === 'ArrowDown')
+                    || (lastDirection === 'ArrowDown' && key === 'ArrowUp')) {
                     return tmpArr;
                 }
                 for (let i = 0; i < tmpArr.length; i++) {
@@ -192,11 +200,11 @@ const SnakePage = () => {
                         tmpArr[i].directions.shift();
                     }
                     tmpArr[i].directions.push({
-                        d: e.key,
+                        d: key,
                         sx: tmpArr[tmpArr.length - 1].x,
                         sy: tmpArr[tmpArr.length - 1].y,
-                        lx: e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -999 : 999,
-                        ly: e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -999 : 999,
+                        lx: key === 'ArrowUp' || key === 'ArrowLeft' ? -999 : 999,
+                        ly: key === 'ArrowUp' || key === 'ArrowLeft' ? -999 : 999,
                         done: false
                     })
                 }
@@ -205,16 +213,23 @@ const SnakePage = () => {
         }
     };
 
+    const keyBoardHandler = (e) => {
+        moveSnake(e.key)
+    }
+
     useEffect(() => {
-        document.addEventListener("keyup", moveSnake);
+        document.addEventListener("keyup", keyBoardHandler);
         return () => {
-            document.removeEventListener("keyup", moveSnake);
+            document.removeEventListener("keyup", keyBoardHandler);
         };
     });
 
     return (
         <div className="snake-game">
             <h2>Retro Snake</h2>
+            <div className="snake-game__score">
+                <p>SCORE: {score}</p>
+            </div>
             <div className="snake-game__content">
                 <div className="snake-game__content__holder">
                     {startGame ? (
@@ -227,12 +242,29 @@ const SnakePage = () => {
 
                             <div className="snake-game__content__holder__board__apple" style={{ left: apple.x + "px", top: apple.y + "px" }}></div>
                         </div>
+
                     ) : (
                             <div className="snake-game__content__holder__gameover">
                                 <button onClick={startNewGame}>{firstPlay ? 'Start' : 'Play again'}</button>
                             </div>
                         )}
+
                 </div>
+
+            </div>
+            <img className='snake-game__instructions' src={kbImg} alt="arrows" />
+            <div className="snake-game__controls">
+                <div className="snake-game__controls__btnholder">
+                    <button onClick={() => { moveSnake('ArrowUp') }}>&#8593;</button>
+                </div>
+                <div className="snake-game__controls__btnholder">
+                    <button className="margin-r" onClick={() => { moveSnake('ArrowLeft') }}>&#8592;</button>
+                    <button onClick={() => { moveSnake('ArrowRight') }}>&#8594;</button>
+                </div>
+                <div className="snake-game__controls__btnholder">
+                    <button onClick={() => { moveSnake('ArrowDown') }}>&#8595;</button>
+                </div>
+
             </div>
         </div>
     );

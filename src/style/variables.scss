@@ -1,0 +1,10 @@
+$tinymobile: "only screen and (max-width : 320px)";
+$mobile: "only screen and (max-width : 767px)";
+$tablet: "only screen and (max-width : 1024px)";
+
+@mixin transition($what,$time) {
+    -webkit-transition: $what  ease-out $time;
+    -moz-transition: $what  ease-out $time;
+    -o-transition: $what  ease-out $time;
+    transition: $what  ease-out $time;
+}
