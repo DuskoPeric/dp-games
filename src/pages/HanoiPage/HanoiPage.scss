@@ -1,0 +1,13 @@
+.hanoi-game-content {
+    z-index: -1;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #002a41;
+    font-family: "Lato", sans-serif;
+}
